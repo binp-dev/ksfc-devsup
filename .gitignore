@@ -1,0 +1,7 @@
+/bin/
+/db/
+/dbd/
+/lib/
+
+/iocBoot/ioclxi/envPaths
+O.*

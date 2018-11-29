@@ -1,0 +1,5 @@
+record(ao, "SCOPE")
+{
+    field(DTYP, "myScope")
+    field(OUT, "#CS")
+}
