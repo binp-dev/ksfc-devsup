@@ -40,7 +40,7 @@ long special_linconv(aoRecord *record, int after) {
     return 0;
 }
 
-struct {
+struct Scope {
     long number;
     DEVSUPFUN report;
     DEVSUPFUN init;
@@ -48,7 +48,9 @@ struct {
     DEVSUPFUN get_ioint_info;
     DEVSUPFUN read_or_write;
     DEVSUPFUN special_linconv;
-} scope = {
+};
+
+struct Scope scope = {
     6,
     report,
     init,
