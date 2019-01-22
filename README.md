@@ -1,5 +1,10 @@
 # EPICS device support modules for some LXI devices
 
+## Build
+```sh
+python3 ./script/build.py
+```
+
 ## Structure
 
 ### Event loop (or without it)
