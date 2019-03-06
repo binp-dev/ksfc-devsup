@@ -3,8 +3,8 @@
 import os
 import sys
 
-from setup import setup
-from tools import substitute, try_remove
+from lib.setup import setup
+from lib.tools import substitute, try_remove
 
 
 def prepare():

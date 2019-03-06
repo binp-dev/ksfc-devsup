@@ -4,7 +4,7 @@ import os
 import sys
 from subprocess import run
 
-from setup import setup
+from lib.setup import setup
 from prepare import prepare, clean as prepare_clean
 
 

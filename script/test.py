@@ -3,8 +3,8 @@
 import os
 import sys
 
-from setup import setup
-from epics import Ioc, caget, caput
+from lib.setup import setup
+from lib.epics import Ioc, caget, caput
 
 
 def test():

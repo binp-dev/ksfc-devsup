@@ -1,0 +1,22 @@
+language: cpp
+
+os: linux
+dist: xenial
+sudo: required
+compiler: gcc
+addons:
+  apt:
+    packages:
+      - libreadline-dev
+
+before_script:
+  which sh &&
+  which bash &&
+  python3 ./script/epics/load.py &&
+  ./script/epics/build.sh
+
+script:
+  source ./script/epics/env.sh &&
+  python3 ./script/prepare.py &&
+  python3 ./script/build.py &&
+  python3 ./script/test.py

@@ -39,7 +39,6 @@ class Ioc:
         self.proc = Popen(
             [exe, fn],
             cwd=cwd,
-            stdout=PIPE,
             universal_newlines=True
         )
         time.sleep(1)
