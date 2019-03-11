@@ -4,11 +4,12 @@ import os
 import sys
 
 from lib.setup import setup
-from lib.epics import Ioc, caget, caput
+from lib.epics import CaRepeater, Ioc, caget, caput
 
 
 def test():
-    with Ioc("iocBoot/ioclxi/st.cmd"):
+    with CaRepeater(), Ioc("iocBoot/ioclxi/st.cmd"):
+
         assert caget("SCOPE") == "0"
         
         caput("SCOPE", "42")

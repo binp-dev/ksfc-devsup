@@ -27,6 +27,23 @@ def caput(pv, value):
     assert ret.returncode == 0
     logger.debug("done")
 
+class CaRepeater:
+    def __init__(self):
+        self.proc = None
+
+    def __enter__(self):
+        self.proc = Popen(
+            ["caRepeater"],
+            universal_newlines=True
+        )
+        time.sleep(1)
+        logger.debug("caRepeater started")
+
+    def __exit__(self, *args):
+        logger.debug("terminating caRepeater ...")
+        self.proc.terminate()
+        logger.debug("caRepeater terminated")
+
 class Ioc:
     def __init__(self, path):
         self.path = path
