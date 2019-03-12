@@ -10,8 +10,6 @@ addons:
       - libreadline-dev
 
 before_script:
-  which sh &&
-  which bash &&
   python3 ./script/epics/load.py &&
   ./script/epics/build.sh
 
