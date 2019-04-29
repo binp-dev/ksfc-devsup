@@ -7,32 +7,32 @@
 #include <epicsExport.h>
 
 long report() {
-    printf("report\n");
+    printf("scope.report\n");
     return 0;
 }
 
 long init() {
-    printf("init\n");
+    printf("scope.init\n");
     return 0;
 }
 
 long init_record(aoRecord *record) {
-    printf("init_record\n");
+    printf("scope.init_record %s\n", record->name);
     return 0;
 }
 
 long get_ioint_info() {
-    printf("get_ioint_info\n");
+    printf("scope.get_ioint_info\n");
     return 0;
 }
 
 long read_or_write(aoRecord *record) {
-    printf("read_or_write\n");
+    printf("scope.read_or_write %s\n", record->name);
     return 0;
 }
 
 long special_linconv(aoRecord *record, int after) {
-    printf("special_linconv\n");
+    printf("scope.special_linconv %s\n", record->name);
     if (after) {
         record->eslo = (record->eguf - record->egul)/0xFFFF;
         record->eoff = record->egul;
