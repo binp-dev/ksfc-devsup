@@ -3,7 +3,7 @@
 /dbd/
 /lib/
 
-/iocBoot/ioclxi/envPaths
+/iocBoot/iocrsbind/envPaths
 O.*
 
 configure/RELEASE

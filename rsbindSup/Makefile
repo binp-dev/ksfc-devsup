@@ -2,18 +2,18 @@ TOP=..
 include $(TOP)/configure/CONFIG
 #=======================================
 
-# Build devlxi as a library for an IOC:
-LIBRARY_IOC += devlxi
+# Build devrsbind as a library for an IOC:
+LIBRARY_IOC += devrsbind
 
 # Library Source files
-devlxi_SRCS += devlxi.c
+devrsbind_SRCS += devrsbind.c
 
 # Link with the asyn and base libraries
-devlxi_LIBS += $(EPICS_BASE_IOC_LIBS)
+devrsbind_LIBS += $(EPICS_BASE_IOC_LIBS)
 
 # Install .dbd and .db files
-DBD += devlxi.dbd
-DB_INSTALLS += $(TOP)/lxiSup/devlxi.db
+DBD += devrsbind.dbd
+DB_INSTALLS += $(TOP)/rsbindSup/devrsbind.db
 
 #=======================================
 include $(TOP)/configure/RULES

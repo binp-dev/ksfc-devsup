@@ -1,4 +1,0 @@
-record(ao, "SCOPE")
-{
-    field(DTYP, "myScope")
-}

@@ -1,4 +1,5 @@
 import os
+import shutil
 
 import logging
 
@@ -23,3 +24,11 @@ def try_remove(fp):
         pass
     else:
         logger.debug("removed '%s'" % fp)
+
+def try_remove_dir(dp):
+    try:
+        shutil.rmtree(dp)
+    except FileNotFoundError:
+        pass
+    else:
+        logger.debug("removed dir '%s'" % dp)

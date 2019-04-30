@@ -25,7 +25,7 @@ def caput(pv, value):
         universal_newlines=True
     )
     assert ret.returncode == 0
-    logger.debug("done")
+    logger.debug("  done")
 
 class CaRepeater:
     def __init__(self):

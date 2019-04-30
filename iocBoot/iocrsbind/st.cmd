@@ -1,6 +1,6 @@
-#!../../bin/linux-x86_64/lxi
+#!../../bin/linux-x86_64/rsbind
 
-## You may have to change lxi to something else
+## You may have to change rsbind to something else
 ## everywhere it appears in this file
 
 < envPaths
@@ -8,11 +8,11 @@
 cd "${TOP}"
 
 ## Register all support components
-dbLoadDatabase "dbd/lxi.dbd"
-lxi_registerRecordDeviceDriver pdbbase
+dbLoadDatabase "dbd/rsbind.dbd"
+rsbind_registerRecordDeviceDriver pdbbase
 
 ## Load record instances
-dbLoadRecords("db/devlxi.db")
+dbLoadRecords("db/devrsbind.db")
 
 cd "${TOP}/iocBoot/${IOC}"
 iocInit

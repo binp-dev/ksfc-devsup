@@ -1,0 +1,16 @@
+record(ao, "AO_0")
+{
+    field(DTYP, "rsbind")
+    field(LINR, "NO CONVERSION")
+}
+
+record(ao, "AO_1")
+{
+    field(DTYP, "rsbind")
+    field(LINR, "NO CONVERSION")
+}
+
+record(bo, "BO_0")
+{
+    field(DTYP, "rsbind")
+}
