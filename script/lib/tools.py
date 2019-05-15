@@ -5,6 +5,7 @@ import logging
 
 logger = logging.getLogger()
 
+
 def substitute(ifp, ofp, rep):
     with open(ifp, 'r') as file :
         data = file.read()
@@ -17,7 +18,7 @@ def substitute(ifp, ofp, rep):
     with open(ofp, 'w') as file:
         file.write(data)
 
-def try_remove(fp):
+def try_remove_file(fp):
     try:
         os.remove(fp)
     except FileNotFoundError:
@@ -32,3 +33,15 @@ def try_remove_dir(dp):
         pass
     else:
         logger.debug("removed dir '%s'" % dp)
+
+def copy_file(fsp, fdp):
+    shutil.copyfile(fsp, fdp)
+    logger.debug("copied '%s' to '%s'" % (fsp, fdp))
+
+def try_make_dir(dp):
+    try:
+        os.mkdir(dp)
+    except FileExistsError:
+        pass
+    else:
+        logger.debug("mkdir '%s'" % dp)

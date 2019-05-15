@@ -8,8 +8,8 @@ LIBRARY_IOC += devrsbind
 # Library Source files
 devrsbind_SRCS += devrsbind.c
 
-# Link with the asyn and base libraries
-devrsbind_LIBS += $(EPICS_BASE_IOC_LIBS)
+# Link with the libraries
+devrsbind_LIBS += $(EPICS_BASE_IOC_LIBS) epics_binding
 
 # Install .dbd and .db files
 DBD += devrsbind.dbd

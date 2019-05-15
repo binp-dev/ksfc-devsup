@@ -5,13 +5,13 @@ import sys
 from subprocess import run
 
 from lib.setup import setup
-from lib.tools import substitute, try_remove, try_remove_dir
+from lib.tools import substitute, try_remove_file, try_remove_dir
 
 
 def clean():
-    try_remove("configure/RELEASE")
+    try_remove_file("configure/RELEASE")
 
-    try_remove("iocBoot/iocrsbind/envPaths")
+    try_remove_file("iocBoot/iocrsbind/envPaths")
 
     for d in ["bin", "db", "dbd", "lib"]:
         try_remove_dir(d)
