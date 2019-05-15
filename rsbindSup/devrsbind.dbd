@@ -1,2 +1,4 @@
+device (ai, INST_IO, rec_ai, "rsbind")
 device (ao, INST_IO, rec_ao, "rsbind")
+device (bi, INST_IO, rec_bi, "rsbind")
 device (bo, INST_IO, rec_bo, "rsbind")

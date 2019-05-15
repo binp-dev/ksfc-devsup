@@ -1,14 +1,19 @@
-record(ao, "AO_0")
+record(ai, "AI")
 {
     field(DTYP, "rsbind")
 }
 
-record(ao, "AO_1")
+record(ao, "AO")
 {
     field(DTYP, "rsbind")
 }
 
-record(bo, "BO_0")
+record(bi, "BI")
+{
+    field(DTYP, "rsbind")
+}
+
+record(bo, "BO")
 {
     field(DTYP, "rsbind")
 }
