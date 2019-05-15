@@ -1,12 +1,14 @@
-language: cpp
+language: rust
 
 os: linux
 dist: xenial
+rust: stable
 sudo: required
-compiler: gcc
+
 addons:
   apt:
     packages:
+      - clang
       - libreadline-dev
 
 before_script:
@@ -15,6 +17,5 @@ before_script:
 
 script:
   source ./script/epics/env.sh &&
-  python3 ./script/prepare.py &&
   python3 ./script/build.py &&
   python3 ./script/test.py

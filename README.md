@@ -6,7 +6,7 @@
 [travis_badge]: https://api.travis-ci.org/binp-automation/epics-drv-rs.svg
 [license_badge]: https://img.shields.io/github/license/binp-automation/epics-drv-rs.svg
 
-[travis]: https://travis-ci.org/nthend/ringbuf
+[travis]: https://travis-ci.org/binp-automation/epics-drv-rs
 [license]: https://github.com/binp-automation/epics-drv-rs/blob/develop/LICENSE
 
 ## Load and build EPICS
