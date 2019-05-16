@@ -1,4 +1,6 @@
-# EPICS device support modules for binding to device API
+# epics-devsup-template
+
+EPICS Device Support template with Rust bindings
 
 [![Travis CI][travis_badge]][travis]
 [![License][license_badge]][license]
@@ -9,19 +11,30 @@
 [travis]: https://travis-ci.org/binp-automation/epics-drv-rs
 [license]: https://github.com/binp-automation/epics-drv-rs/blob/develop/LICENSE
 
-## Load and build EPICS
+This project is a template, so you may clone it and made changes as you need.
+
+## Requirements
+
++ `rustc` and `cargo`
++ `clang`
++ `libreadline-dev`
+
+
+## Usage
+
+### Load and build EPICS
 ```bash
 python3 ./script/epics/load.py
 ./script/epics/build.sh
 ```
 
-## Build IOC
+### Build IOC
 ```bash
 source ./script/epics/env.sh
 python3 ./script/build.py
 ```
 
-## Run and test IOC
+### Run and test IOC
 ```bash
 source ./script/epics/env.sh
 python3 ./script/test.py

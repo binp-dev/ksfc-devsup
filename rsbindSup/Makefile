@@ -9,7 +9,7 @@ LIBRARY_IOC += devrsbind
 devrsbind_SRCS += devrsbind.c
 
 # Link with the libraries
-devrsbind_LIBS += $(EPICS_BASE_IOC_LIBS) epics_binding
+devrsbind_LIBS += $(EPICS_BASE_IOC_LIBS)
 
 # Install .dbd and .db files
 DBD += devrsbind.dbd
