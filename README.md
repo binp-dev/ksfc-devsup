@@ -15,6 +15,8 @@ This project is a template, so you may clone it and made changes as you need.
 
 ## Requirements
 
++ `git`
++ `python3`
 + `rustc` and `cargo`
 + `clang`
 + `libreadline-dev`
@@ -22,19 +24,30 @@ This project is a template, so you may clone it and made changes as you need.
 
 ## Usage
 
+### Clone template project
+
+```bash
+git clone https://github.com/binp-automation/epics-devsup-template.git
+cd epics-devsup-template
+git submodule update --init
+```
+
 ### Load and build EPICS
+
 ```bash
 python3 ./script/epics/load.py
 ./script/epics/build.sh
 ```
 
 ### Build IOC
+
 ```bash
 source ./script/epics/env.sh
 python3 ./script/build.py
 ```
 
 ### Run and test IOC
+
 ```bash
 source ./script/epics/env.sh
 python3 ./script/test.py
