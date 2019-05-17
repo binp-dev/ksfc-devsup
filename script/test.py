@@ -17,12 +17,16 @@ def test_ioc():
         assert caget("AO") == "0"
         caput("AO", "42")
         assert caget("AO") == "42"
+        caput("AO", "-17")
+        assert caget("AO") == "-17"
 
         assert caget("AI") == "0"
 
         caput("BO", "0")
 
+        time.sleep(10)
+
 if __name__ == "__main__":
     setup()
-    test_binding()
+    #test_binding()
     test_ioc()

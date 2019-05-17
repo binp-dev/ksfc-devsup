@@ -20,10 +20,10 @@ def prepare():
     try_make_dir("./lib/" + os.environ["EPICS_HOST_ARCH"])
 
 def binding():
-    assert run(["cargo", "build"], cwd="./binding").returncode == 0
-    src_dir = "./binding/target/debug/"
+    assert run(["cargo", "build"], cwd="./device_support").returncode == 0
+    src_dir = "./device_support/target/debug/"
     dst_dir = "./lib/" + os.environ["EPICS_HOST_ARCH"] + "/"
-    libs = ["libepics_binding.a", "libepics_binding.so"]
+    libs = ["libdevice_support.a", "libdevice_support.so"]
     try_make_dir(dst_dir)
     for lib in libs:
         copy_file(src_dir + lib, dst_dir + lib)

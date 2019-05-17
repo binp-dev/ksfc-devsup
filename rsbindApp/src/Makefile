@@ -19,7 +19,7 @@ rsbind_DBD += base.dbd
 rsbind_DBD += devrsbind.dbd
 
 # Add all the support libraries needed by this IOC
-rsbind_LIBS += devrsbind epics_binding
+rsbind_LIBS += devrsbind device_support
 
 # rsbind_registerRecordDeviceDriver.cpp derives from rsbind.dbd
 rsbind_SRCS += rsbind_registerRecordDeviceDriver.cpp

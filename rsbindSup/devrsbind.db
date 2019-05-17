@@ -1,6 +1,7 @@
 record(ai, "AI")
 {
     field(DTYP, "rsbind")
+    field(SCAN, "2 second")
 }
 
 record(ao, "AO")
@@ -11,6 +12,7 @@ record(ao, "AO")
 record(bi, "BI")
 {
     field(DTYP, "rsbind")
+    field(SCAN, "I/O Intr")
 }
 
 record(bo, "BO")
