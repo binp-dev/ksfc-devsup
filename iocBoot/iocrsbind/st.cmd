@@ -9,13 +9,19 @@ cd "${TOP}"
 
 ## Register all support components
 dbLoadDatabase "dbd/rsbind.dbd"
-rsbind_registerRecordDeviceDriver pdbbase
+rsbind_registerRecordDeviceDriver(pdbbase)
 
 ## Load record instances
 dbLoadRecords("db/devrsbind.db")
 
+
+
 cd "${TOP}/iocBoot/${IOC}"
 iocInit
 
+
 ## Start any sequence programs
 #seq sncxxx,"user=alex"
+
+test_cmd()
+#(1, 2.0, "test string")

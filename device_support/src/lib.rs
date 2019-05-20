@@ -3,7 +3,8 @@ use std::thread;
 use std::time::Duration;
 
 use epics_binding::{
-    bind_device_support, 
+    bind_device_support,
+    register_command,
     DeviceSupport,
     record::*,
 };
@@ -15,6 +16,10 @@ struct MyDevSup {
 impl MyDevSup {
     fn new() -> Self {
         println!("[devsup] new");
+        /*register_command!(fn test_cmd() { //a: i32, b: f64, c: &str) {
+            //println!("{}, {}, {}", a, b, c);
+            println!("[X] cmd");
+        });*/
         Self { jh: None }
     }
 }

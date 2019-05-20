@@ -5,13 +5,13 @@ EPICS Device Support template with Rust bindings
 [![Travis CI][travis_badge]][travis]
 [![License][license_badge]][license]
 
-[travis_badge]: https://api.travis-ci.org/binp-automation/epics-drv-rs.svg
-[license_badge]: https://img.shields.io/github/license/binp-automation/epics-drv-rs.svg
+[travis_badge]: https://api.travis-ci.org/binp-automation/epics-devsup-template.svg
+[license_badge]: https://img.shields.io/github/license/binp-automation/epics-devsup-template.svg
 
-[travis]: https://travis-ci.org/binp-automation/epics-drv-rs
-[license]: https://github.com/binp-automation/epics-drv-rs/blob/develop/LICENSE
+[travis]: https://travis-ci.org/binp-automation/epics-devsup-template
+[license]: https://github.com/binp-automation/epics-devsup-template/blob/develop/LICENSE
 
-This project is a template, so you may clone it and made changes as you need.
+This project is a template, so you may clone it and make changes as you need.
 
 ## Requirements
 

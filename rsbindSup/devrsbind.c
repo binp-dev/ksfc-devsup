@@ -11,6 +11,11 @@
 
 #include <epicsExport.h>
 
+#include <iocsh.h>
+
+extern void rsbind_init(void);
+extern void rsbind_quit(void);
+
 extern long rsbind_get_ioint_info  (int cmd, struct dbCommon *rec, IOSCANPVT *ppvt);
 
 extern long rsbind_ai_init_record     (struct aiRecord *rec);
@@ -98,7 +103,25 @@ struct RecBo rec_bo = {
     rsbind_bo_write_bo
 };
 
+
 epicsExportAddress(dset, rec_ai);
 epicsExportAddress(dset, rec_ao);
 epicsExportAddress(dset, rec_bi);
 epicsExportAddress(dset, rec_bo);
+
+void test_cmd() {
+    printf("[C] test_cmd\n");
+}
+
+static void rsbind(void) {
+    rsbind_init();
+
+    static iocshFuncDef fndef;
+    fndef.name = "test_cmd";
+    fndef.nargs = 0;
+    fndef.arg = NULL;
+
+    iocshRegister(&fndef, test_cmd);
+}
+
+epicsExportRegistrar(rsbind);
