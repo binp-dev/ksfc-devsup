@@ -13,6 +13,10 @@ EPICS Device Support template with Rust bindings
 
 This project is a template, so you may clone it and make changes as you need.
 
+
+## [EPICS Binding Rust API Documentation](https://binp-automation.github.io/rust-epics-devsup/target/doc/epics_binding/)
+
+
 ## Requirements
 
 + `git`
@@ -29,7 +33,7 @@ This project is a template, so you may clone it and make changes as you need.
 ```bash
 git clone https://github.com/binp-automation/epics-devsup-template.git
 cd epics-devsup-template
-git submodule update --init
+git submodule update --init --recursive
 ```
 
 ### Load and build EPICS

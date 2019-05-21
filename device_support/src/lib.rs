@@ -16,10 +16,9 @@ struct MyDevSup {
 impl MyDevSup {
     fn new() -> Self {
         println!("[devsup] new");
-        /*register_command!(fn test_cmd() { //a: i32, b: f64, c: &str) {
-            //println!("{}, {}, {}", a, b, c);
-            println!("[X] cmd");
-        });*/
+        register_command!(fn test_cmd(a: i32, b: f64, c: &str) {
+            println!("[devsup] test_cmd({}, {}, {})", a, b, c);
+        });
         Self { jh: None }
     }
 }
@@ -63,4 +62,4 @@ impl Drop for MyDevSup {
     }
 }
 
-bind_device_support!(MyDevSup::new);
+bind_device_support!(MyDevSup::new());

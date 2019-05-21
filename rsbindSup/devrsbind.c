@@ -121,7 +121,7 @@ static void rsbind(void) {
     fndef.nargs = 0;
     fndef.arg = NULL;
 
-    iocshRegister(&fndef, test_cmd);
+    //iocshRegister(&fndef, test_cmd);
 }
 
 epicsExportRegistrar(rsbind);

@@ -23,5 +23,4 @@ iocInit
 ## Start any sequence programs
 #seq sncxxx,"user=alex"
 
-test_cmd()
-#(1, 2.0, "test string")
+test_cmd(1, 2.0, "test string")
