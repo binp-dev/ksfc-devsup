@@ -1,3 +1,0 @@
-[submodule "binding"]
-	path = binding
-	url = https://github.com/binp-automation/rust-epics-devsup.git
