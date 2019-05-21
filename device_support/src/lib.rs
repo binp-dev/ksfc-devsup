@@ -1,65 +1,37 @@
-use std::io;
-use std::thread;
-use std::time::Duration;
+use std::str::from_utf8;
 
-use epics_binding::{
+use epics::{
     bind_device_support,
     register_command,
-    DeviceSupport,
     record::*,
 };
 
-struct MyDevSup {
-    jh: Option<thread::JoinHandle<()>>,
+
+fn init() {
+    println!("[devsup] init");
+    register_command!(fn test_command(a: i32, b: f64, c: &str) {
+        println!("[devsup] test_command({}, {}, {})", a, b, c);
+    });
 }
 
-impl MyDevSup {
-    fn new() -> Self {
-        println!("[devsup] new");
-        register_command!(fn test_cmd(a: i32, b: f64, c: &str) {
-            println!("[devsup] test_cmd({}, {}, {})", a, b, c);
-        });
-        Self { jh: None }
-    }
+fn record_init(record: &mut AnyRecord) {
+    println!("[devsup] record_init {}", from_utf8(record.name()).unwrap());
+}
+fn record_set_scan(record: &mut RecordBase, _scan: Scan) {
+    println!("[devsup] record_set_scan {}", from_utf8(record.name()).unwrap());
+}
+fn record_read(record: &mut ReadRecord) {
+    println!("[devsup] record_read {}", from_utf8(record.name()).unwrap());
+}
+fn record_write(record: &mut WriteRecord) {
+    println!("[devsup] record_write {}", from_utf8(record.name()).unwrap());
 }
 
-impl DeviceSupport for MyDevSup {
-    fn init(&mut self, record: &mut AnyRecord) -> io::Result<()> {
-        println!("[devsup] init {}", record.name());
-        Ok(())
-    }
-    fn read(&mut self, record: &mut ReadRecord) -> io::Result<()> {
-        println!("[devsup] read {}", record.name());
-        thread::sleep(Duration::from_millis(500));
-        Ok(())
-    }
-    fn write(&mut self, record: &mut WriteRecord) -> io::Result<()> {
-        println!("[devsup] write {}", record.name());
-        thread::sleep(Duration::from_millis(500));
-        Ok(())
-    }
-    fn set_scan(&mut self, record: &mut Record, scan: Scan) -> io::Result<()> {
-        println!("[devsup] set_scan {}", record.name());
-        if self.jh.is_none() {
-            self.jh = Some(thread::spawn(move || {
-                thread::sleep(Duration::from_millis(2000));
-                for _ in 0..3 {
-                    thread::sleep(Duration::from_millis(1000));
-                    scan.request().unwrap();
-                }
-            }));
-        }
-        Ok(())
-    }
-}
 
-impl Drop for MyDevSup {
-    fn drop(&mut self) {
-        match self.jh.take() {
-            Some(jh) => jh.join().unwrap(),
-            None => (),
-        }
-    }
-}
-
-bind_device_support!(MyDevSup::new());
+bind_device_support!(
+    init,
+    record_init,
+    record_set_scan,
+    record_read,
+    record_write
+);

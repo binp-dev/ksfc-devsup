@@ -1,21 +1,54 @@
-record(ai, "AI")
+record(ai, "AI_IOINTR")
 {
     field(DTYP, "rsbind")
-    field(SCAN, "2 second")
+    field(SCAN, "I/O Intr")
 }
-
+record(ai, "AI_SCAN_1S")
+{
+    field(DTYP, "rsbind")
+    field(SCAN, "1 second")
+}
 record(ao, "AO")
 {
     field(DTYP, "rsbind")
 }
 
-record(bi, "BI")
+record(bi, "BI_IOINTR")
 {
     field(DTYP, "rsbind")
     field(SCAN, "I/O Intr")
 }
-
 record(bo, "BO")
+{
+    field(DTYP, "rsbind")
+}
+
+record(longin, "LONGIN_IOINTR")
+{
+    field(DTYP, "rsbind")
+    field(SCAN, "I/O Intr")
+}
+record(longin, "LONGIN_SCAN_2S")
+{
+    field(DTYP, "rsbind")
+    field(SCAN, "2 second")
+}
+record(longout, "LONGOUT")
+{
+    field(DTYP, "rsbind")
+}
+
+record(stringin, "STRINGIN_PINI")
+{
+    field(DTYP, "rsbind")
+    field(PINI, "Yes")
+}
+record(stringin, "STRINGIN_IOINTR")
+{
+    field(DTYP, "rsbind")
+    field(SCAN, "I/O Intr")
+}
+record(stringout, "STRINGOUT")
 {
     field(DTYP, "rsbind")
 }

@@ -8,10 +8,4 @@ edition = "2018"
 crate-type = ["staticlib", "cdylib"]
 
 [dependencies]
-epics_binding = { path = "../binding" }
-
-[profile.dev]
-incremental = false
-
-[profile.release]
-incremental = false
+epics = { path = "../../epics-rs" }

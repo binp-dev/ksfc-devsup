@@ -14,13 +14,10 @@ rsbind_registerRecordDeviceDriver(pdbbase)
 ## Load record instances
 dbLoadRecords("db/devrsbind.db")
 
-
-
 cd "${TOP}/iocBoot/${IOC}"
 iocInit
-
 
 ## Start any sequence programs
 #seq sncxxx,"user=alex"
 
-test_cmd(1, 2.0, "test string")
+test_command(1, 2.0, "test string")
