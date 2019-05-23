@@ -14,7 +14,9 @@ EPICS Device Support template with Rust bindings
 This project is a template, so you may clone it and make changes as you need.
 
 
-## [EPICS Binding Rust API Documentation](https://binp-automation.github.io/rust-epics-devsup/target/doc/epics_binding/)
+## Documentation
+
++ [Rust bindings to EPICS](https://binp-automation.github.io/rust-epics-devsup/target/doc/epics_binding/)
 
 
 ## Requirements

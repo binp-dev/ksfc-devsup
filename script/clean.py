@@ -22,6 +22,8 @@ def clean():
                 if d.startswith("O."):
                     try_remove_dir(os.path.join(r, d))
 
+    assert run(["cargo", "clean"], cwd="device_support").returncode == 0
+
 if __name__ == "__main__":
     setup()
     clean()
