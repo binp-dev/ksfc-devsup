@@ -1,22 +1,22 @@
-# epics-devsup-template
+# devsup-template
 
 EPICS Device Support template with Rust bindings
 
 [![Travis CI][travis_badge]][travis]
 [![License][license_badge]][license]
 
-[travis_badge]: https://api.travis-ci.org/binp-automation/epics-devsup-template.svg
-[license_badge]: https://img.shields.io/github/license/binp-automation/epics-devsup-template.svg
+[travis_badge]: https://api.travis-ci.org/binp-automation/devsup-template.svg
+[license_badge]: https://img.shields.io/github/license/binp-automation/devsup-template.svg
 
-[travis]: https://travis-ci.org/binp-automation/epics-devsup-template
-[license]: https://github.com/binp-automation/epics-devsup-template/blob/develop/LICENSE
+[travis]: https://travis-ci.org/binp-automation/devsup-template
+[license]: https://github.com/binp-automation/devsup-template/blob/develop/LICENSE
 
 This project is a template, so you may clone it and make changes as you need.
 
 
 ## Documentation
 
-+ [Rust bindings to EPICS](https://binp-automation.github.io/rust-epics-devsup/target/doc/epics_binding/)
++ [Rust bindings to EPICS](https://binp-automation.github.io/epics-rs/target/doc/epics/)
 
 
 ## Requirements
@@ -33,9 +33,8 @@ This project is a template, so you may clone it and make changes as you need.
 ### Clone template project
 
 ```bash
-git clone https://github.com/binp-automation/epics-devsup-template.git
-cd epics-devsup-template
-git submodule update --init --recursive
+git clone https://github.com/binp-automation/devsup-template.git
+cd devsup-template
 ```
 
 ### Load and build EPICS
