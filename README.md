@@ -1,22 +1,6 @@
-# epics-devsup-template
+# ksfc-devsup
 
-EPICS Device Support template with Rust bindings
-
-[![Travis CI][travis_badge]][travis]
-[![License][license_badge]][license]
-
-[travis_badge]: https://api.travis-ci.org/binp-automation/epics-devsup-template.svg
-[license_badge]: https://img.shields.io/github/license/binp-automation/epics-devsup-template.svg
-
-[travis]: https://travis-ci.org/binp-automation/epics-devsup-template
-[license]: https://github.com/binp-automation/epics-devsup-template/blob/develop/LICENSE
-
-This project is a template, so you may clone it and make changes as you need.
-
-
-## Documentation
-
-+ [Rust bindings to EPICS](https://binp-automation.github.io/rust-epics-devsup/target/doc/epics_binding/)
+EPICS Device Support for Keysight 53220A frequency counter
 
 
 ## Requirements
@@ -30,31 +14,35 @@ This project is a template, so you may clone it and make changes as you need.
 
 ## Usage
 
-### Clone template project
+### Clone project
 
 ```bash
-git clone https://github.com/binp-automation/epics-devsup-template.git
-cd epics-devsup-template
-git submodule update --init --recursive
+git clone https://github.com/binp-automation/ksfc-devsup.git
+cd ksfc-devsup
 ```
 
-### Load and build EPICS
+### Set EPICS envvars
 
 ```bash
-python3 ./script/epics/load.py
-./script/epics/build.sh
+export EPICS_BASE=/path/to/epics-base/
+export EPICS_HOST_ARCH=$($EPICS_BASE/startup/EpicsHostArch)
+export PATH=$PATH:$EPICS_BASE/bin/$EPICS_HOST_ARCH/
 ```
+
+### Configure
+
++ In `iocBoot/iocrsbind/st.cmd` edit:
+  + `dbLoadRecords("db/devrsbind.db", "P=<DEVICE_PREFIX>")`
+  + `connectDevice(<DEVICE_IP_ADDRESS>, <DEVICE_PREFIX>)`
 
 ### Build IOC
 
 ```bash
-source ./script/epics/env.sh
 python3 ./script/build.py
 ```
 
 ### Run and test IOC
 
 ```bash
-source ./script/epics/env.sh
 python3 ./script/test.py
 ```

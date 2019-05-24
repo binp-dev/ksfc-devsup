@@ -13,15 +13,8 @@ def test_binding():
 
 def test_ioc():
     with CaRepeater(), Ioc("iocBoot/iocrsbind/st.cmd"):
-        assert caget("AO") == "0"
-        
-        caput("AO", "42")
-        assert caget("AO") == "42"
-        
-        caput("AO", "-17")
-        assert caget("AO") == "-17"
-
-        time.sleep(10)
+        assert caget("FC:IDN").startswith("Agilent Technologies,53220A,MY57500140,")
+        #assert caget("FC:FREQ_1") == "0"
 
 if __name__ == "__main__":
     setup()
