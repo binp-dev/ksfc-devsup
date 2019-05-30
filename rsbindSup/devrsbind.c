@@ -16,32 +16,39 @@
 extern void rsbind_init(void);
 extern void rsbind_quit(void);
 
-extern long rsbind_get_ioint_info  (int cmd, struct dbCommon *rec, IOSCANPVT *ppvt);
 
 extern long rsbind_ai_init_record     (struct aiRecord *rec);
+extern long rsbind_ai_get_ioint_info  (int cmd, struct aiRecord *rec, IOSCANPVT *ppvt);
 extern long rsbind_ai_read_ai         (struct aiRecord *rec);
 extern long rsbind_ai_special_linconv (struct aiRecord *rec, int after);
 
 extern long rsbind_ao_init_record     (struct aoRecord *rec);
+extern long rsbind_ao_get_ioint_info  (int cmd, struct aoRecord *rec, IOSCANPVT *ppvt);
 extern long rsbind_ao_write_ao        (struct aoRecord *rec);
 extern long rsbind_ao_special_linconv (struct aoRecord *rec, int after);
 
 extern long rsbind_bi_init_record     (struct biRecord *rec);
+extern long rsbind_bi_get_ioint_info  (int cmd, struct biRecord *rec, IOSCANPVT *ppvt);
 extern long rsbind_bi_read_bi         (struct biRecord *rec);
 
 extern long rsbind_bo_init_record     (struct boRecord *rec);
+extern long rsbind_bo_get_ioint_info  (int cmd, struct boRecord *rec, IOSCANPVT *ppvt);
 extern long rsbind_bo_write_bo        (struct boRecord *rec);
 
 extern long rsbind_longin_init_record    (struct biRecord *rec);
+extern long rsbind_longin_get_ioint_info  (int cmd, struct biRecord *rec, IOSCANPVT *ppvt);
 extern long rsbind_longin_read_longin    (struct biRecord *rec);
 
 extern long rsbind_longout_init_record   (struct boRecord *rec);
+extern long rsbind_longout_get_ioint_info  (int cmd, struct boRecord *rec, IOSCANPVT *ppvt);
 extern long rsbind_longout_write_longout (struct boRecord *rec);
 
 extern long rsbind_stringin_init_record      (struct biRecord *rec);
+extern long rsbind_stringin_get_ioint_info  (int cmd, struct biRecord *rec, IOSCANPVT *ppvt);
 extern long rsbind_stringin_read_stringin    (struct biRecord *rec);
 
 extern long rsbind_stringout_init_record     (struct boRecord *rec);
+extern long rsbind_stringout_get_ioint_info  (int cmd, struct boRecord *rec, IOSCANPVT *ppvt);
 extern long rsbind_stringout_write_stringout (struct boRecord *rec);
 
 struct RecAi {
@@ -116,7 +123,7 @@ struct RecAi rec_ai = {
     NULL,
     NULL,
     rsbind_ai_init_record,
-    rsbind_get_ioint_info,
+    rsbind_ai_get_ioint_info,
     rsbind_ai_read_ai,
     rsbind_ai_special_linconv
 };
@@ -125,16 +132,17 @@ struct RecAo rec_ao = {
     NULL,
     NULL,
     rsbind_ao_init_record,
-    rsbind_get_ioint_info,
+    rsbind_ao_get_ioint_info,
     rsbind_ao_write_ao,
     rsbind_ao_special_linconv
 };
+
 struct RecBi rec_bi = {
     5,
     NULL,
     NULL,
     rsbind_bi_init_record,
-    rsbind_get_ioint_info,
+    rsbind_bi_get_ioint_info,
     rsbind_bi_read_bi
 };
 struct RecBo rec_bo = {
@@ -142,7 +150,7 @@ struct RecBo rec_bo = {
     NULL,
     NULL,
     rsbind_bo_init_record,
-    rsbind_get_ioint_info,
+    rsbind_bo_get_ioint_info,
     rsbind_bo_write_bo
 };
 struct RecLongin rec_longin = {
@@ -150,7 +158,7 @@ struct RecLongin rec_longin = {
     NULL,
     NULL,
     rsbind_longin_init_record,
-    rsbind_get_ioint_info,
+    rsbind_longin_get_ioint_info,
     rsbind_longin_read_longin
 };
 struct RecLongout rec_longout = {
@@ -158,7 +166,7 @@ struct RecLongout rec_longout = {
     NULL,
     NULL,
     rsbind_longout_init_record,
-    rsbind_get_ioint_info,
+    rsbind_longout_get_ioint_info,
     rsbind_longout_write_longout
 };
 struct RecStringin rec_stringin = {
@@ -166,7 +174,7 @@ struct RecStringin rec_stringin = {
     NULL,
     NULL,
     rsbind_stringin_init_record,
-    rsbind_get_ioint_info,
+    rsbind_stringin_get_ioint_info,
     rsbind_stringin_read_stringin
 };
 struct RecStringout rec_stringout = {
@@ -174,7 +182,7 @@ struct RecStringout rec_stringout = {
     NULL,
     NULL,
     rsbind_stringout_init_record,
-    rsbind_get_ioint_info,
+    rsbind_stringout_get_ioint_info,
     rsbind_stringout_write_stringout
 };
 
@@ -186,6 +194,7 @@ epicsExportAddress(dset, rec_longin);
 epicsExportAddress(dset, rec_longout);
 epicsExportAddress(dset, rec_stringin);
 epicsExportAddress(dset, rec_stringout);
+
 
 static void rsbind(void) {
     rsbind_init();
