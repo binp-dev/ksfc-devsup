@@ -130,7 +130,7 @@ dependencies = [
 name = "device_support"
 version = "0.1.0"
 dependencies = [
- "epics 0.1.0 (git+https://github.com/binp-automation/epics-rs?rev=1a3321478894e67f93d65e413a8098d7ca7a7faa)",
+ "epics 0.2.1 (git+https://github.com/binp-automation/epics-rs?rev=d2d8d4a0103e7f94f1ab7aea2944e9e7244d0485)",
 ]
 
 [[package]]
@@ -147,8 +147,8 @@ dependencies = [
 
 [[package]]
 name = "epics"
-version = "0.1.0"
-source = "git+https://github.com/binp-automation/epics-rs?rev=1a3321478894e67f93d65e413a8098d7ca7a7faa#1a3321478894e67f93d65e413a8098d7ca7a7faa"
+version = "0.2.1"
+source = "git+https://github.com/binp-automation/epics-rs?rev=d2d8d4a0103e7f94f1ab7aea2944e9e7244d0485#d2d8d4a0103e7f94f1ab7aea2944e9e7244d0485"
 dependencies = [
  "epics-sys 0.1.0 (git+https://github.com/binp-automation/epics-sys?rev=81ff86e4544c75303fe9f5eef57f6a9ded2d30e4)",
  "lazy_static 1.3.0 (registry+https://github.com/rust-lang/crates.io-index)",
@@ -438,7 +438,7 @@ dependencies = [
 "checksum clang-sys 0.28.0 (registry+https://github.com/rust-lang/crates.io-index)" = "4227269cec09f5f83ff160be12a1e9b0262dd1aa305302d5ba296c2ebd291055"
 "checksum clap 2.33.0 (registry+https://github.com/rust-lang/crates.io-index)" = "5067f5bb2d80ef5d68b4c87db81601f0b75bca627bc2ef76b141d7b846a3c6d9"
 "checksum env_logger 0.6.1 (registry+https://github.com/rust-lang/crates.io-index)" = "b61fa891024a945da30a9581546e8cfaf5602c7b3f4c137a2805cf388f92075a"
-"checksum epics 0.1.0 (git+https://github.com/binp-automation/epics-rs?rev=1a3321478894e67f93d65e413a8098d7ca7a7faa)" = "<none>"
+"checksum epics 0.2.1 (git+https://github.com/binp-automation/epics-rs?rev=d2d8d4a0103e7f94f1ab7aea2944e9e7244d0485)" = "<none>"
 "checksum epics-sys 0.1.0 (git+https://github.com/binp-automation/epics-sys?rev=81ff86e4544c75303fe9f5eef57f6a9ded2d30e4)" = "<none>"
 "checksum failure 0.1.5 (registry+https://github.com/rust-lang/crates.io-index)" = "795bd83d3abeb9220f257e597aa0080a508b27533824adf336529648f6abf7e2"
 "checksum fxhash 0.2.1 (registry+https://github.com/rust-lang/crates.io-index)" = "c31b6d751ae2c7f11320402d34e41349dd1016f8d5d45e48c4312bc8625af50c"
