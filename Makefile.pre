@@ -1,6 +1,6 @@
-# Makefile for Asyn lxi support
+# Makefile for Asyn rsbind support
 #
-# Created by alex on Thu Nov 29 16:24:17 2018
+# Created by Alexey Gerasev on Thu Nov 29 16:24:17 2018
 # Based on the Asyn devGpib template
 
 TOP = .

@@ -1,1 +1,0 @@
-device (ao, INST_IO, scope, "myScope")

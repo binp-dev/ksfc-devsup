@@ -1,0 +1,11 @@
+[package]
+name = "device_support"
+version = "0.1.0"
+authors = ["Alexey Gerasev <alexey.gerasev@gmail.com>"]
+edition = "2018"
+
+[lib]
+crate-type = ["staticlib", "cdylib"]
+
+[dependencies]
+epics = { git = "https://github.com/binp-automation/epics-rs", rev = "1a3321478894e67f93d65e413a8098d7ca7a7faa" }

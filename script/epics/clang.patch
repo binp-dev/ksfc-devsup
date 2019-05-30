@@ -1,0 +1,38 @@
+diff --git a/configure/os/CONFIG_SITE.Common.linux-x86 b/configure/os/CONFIG_SITE.Common.linux-x86
+index e4e7dd0fd..04393969c 100644
+--- a/configure/os/CONFIG_SITE.Common.linux-x86
++++ b/configure/os/CONFIG_SITE.Common.linux-x86
+@@ -37,10 +37,10 @@ OP_SYS_CFLAGS += -D_FILE_OFFSET_BITS=64
+ 
+ # Uncomment the followings lines to build with CLANG instead of GCC.
+ #
+-#GNU         = NO
+-#CMPLR_CLASS = clang
+-#CC          = clang
+-#CCC         = clang++
++GNU         = NO
++CMPLR_CLASS = clang
++CC          = clang
++CCC         = clang++
+ 
+ 
+ # It makes sense to include debugging symbols even in optimized builds
+diff --git a/configure/os/CONFIG_SITE.Common.linux-x86_64 b/configure/os/CONFIG_SITE.Common.linux-x86_64
+index 6f7a2dc7b..7f7eb6c68 100644
+--- a/configure/os/CONFIG_SITE.Common.linux-x86_64
++++ b/configure/os/CONFIG_SITE.Common.linux-x86_64
+@@ -33,10 +33,10 @@ COMMANDLINE_LIBRARY = READLINE
+ 
+ # Uncomment the followings lines to build with CLANG instead of GCC.
+ #
+-#GNU         = NO
+-#CMPLR_CLASS = clang
+-#CC          = clang
+-#CCC         = clang++
++GNU         = NO
++CMPLR_CLASS = clang
++CC          = clang
++CCC         = clang++
+ 
+ 
+ # It makes sense to include debugging symbols even in optimized builds
