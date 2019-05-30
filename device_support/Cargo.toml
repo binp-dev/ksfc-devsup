@@ -8,5 +8,5 @@ edition = "2018"
 crate-type = ["staticlib", "cdylib"]
 
 [dependencies]
-epics = { git = "https://github.com/binp-automation/epics-rs", rev = "d2d8d4a0103e7f94f1ab7aea2944e9e7244d0485" }
+epics = { git = "https://github.com/binp-automation/epics-rs", rev = "f55e7096a59d6d9951ec4ca3a772e34085d48b59" }
 #{ path = "../../epics-rs" }
