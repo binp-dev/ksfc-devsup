@@ -5,12 +5,13 @@ use std::sync::Mutex;
 use std::collections::hash_map::{HashMap, Entry};
 use std::time::{Duration};
 
-use log::{info, error};
-use simple_logger;
+use log::{info};
+//use simple_logger;
 use lazy_static::lazy_static;
 
 
 use epics::{
+    self,
     bind_device_support,
     register_command,
     record::*,
@@ -20,6 +21,7 @@ use epics::{
 use ksfc_lxi::{Fc};
 
 use handler::*;
+
 
 lazy_static! {
     static ref DEVICES: Mutex<HashMap<String, Fc>> = Mutex::new(HashMap::new());
@@ -34,37 +36,36 @@ fn split_name(name: &str) -> Result<(&str, &str), ()> {
     }
 }
 
-fn with_device<T, E, F>(dev: &str, f: F) -> Result<T, Option<E>>
-where F: FnOnce(&mut Fc) -> Result<T, E> {
+fn with_device<T, F>(dev: &str, f: F) -> epics::Result<T>
+where F: FnOnce(&mut Fc) -> epics::Result<T> {
     match DEVICES.lock().unwrap().get_mut(dev) {
-        Some(fc) => f(fc).map_err(|e| Some(e)),
-        None => {
-            error!("no such device: {}", dev);
-            Err(None)
-        }
+        Some(fc) => f(fc),
+        None => Err(format!("no such device: {}", dev).into()),
     }
 }
 
-
-fn init(context: &mut Context) {
-    simple_logger::init().unwrap();
+fn init(context: &mut Context) -> epics::Result<()> {
+    //simple_logger::init().unwrap();
     info!("init");
-    register_command!(context, fn connectDevice(addr: &str, prefix: &str) {
-        info!("connectDevice(addr={}, prefix={})", addr, prefix);
+    register_command!(context, fn connectDevice(addr: &str, prefix: &str) -> epics::Result<()> {
         match Fc::new(&"10.0.0.9", None, Duration::from_secs(10)) {
             Ok(fc) => match DEVICES.lock().unwrap().entry(String::from(prefix)) {
-                Entry::Occupied(_) => error!("device already exists"),
+                Entry::Occupied(_) => {
+                    Err(format!("device '{}' already exists", prefix).into())
+                },
                 Entry::Vacant(v) => {
                     v.insert(fc);
-                    info!("device connected");
+                    info!("device '{}' ({}) connected", prefix, addr);
+                    Ok(())
                 },
             },
-            Err(e) => error!("cannot connect: {:?}", e),
+            Err(e) => Err(format!("cannot connect to {} ({}): {:?}", prefix, addr, e).into()),
         }
     });
+    Ok(())
 }
 
-fn record_init(record: &mut AnyRecord) -> AnyHandlerBox {
+fn record_init(record: &mut AnyRecord) -> epics::Result<AnyHandlerBox> {
     info!("record_init ...");
     let full_name = String::from(from_utf8(record.name()).unwrap());
     let (pref, name) = split_name(&full_name).unwrap();
@@ -73,11 +74,11 @@ fn record_init(record: &mut AnyRecord) -> AnyHandlerBox {
         AnyRecord::Stringin(_) => {
             match name {
                 "IDN" => Ok(Box::new(IdnHandler::new(pref)) as Box<dyn StringinHandler + Send>),
-                _ => { error!("no such device"); Err(())},
+                _ => Err(()),
             }
         }.map(|t| t.into()),
-        _ => { error!("unknown record"); Err(()) },
-    }.unwrap()
+        _ => Err(()),
+    }.map_err(|_| format!("no handler for {:?} record '{}'", record.rtype(), name).into())
 }
 
 bind_device_support!(
