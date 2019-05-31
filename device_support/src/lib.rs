@@ -5,8 +5,8 @@ use std::sync::Mutex;
 use std::collections::hash_map::{HashMap, Entry};
 use std::time::{Duration};
 
-use log::{info, error};
-use simple_logger;
+use log::{info};
+//use simple_logger;
 use lazy_static::lazy_static;
 
 
@@ -36,7 +36,7 @@ fn split_name(name: &str) -> Result<(&str, &str), ()> {
     }
 }
 
-fn with_device<T, E, F>(dev: &str, f: F) -> epics::Result<T>
+fn with_device<T, F>(dev: &str, f: F) -> epics::Result<T>
 where F: FnOnce(&mut Fc) -> epics::Result<T> {
     match DEVICES.lock().unwrap().get_mut(dev) {
         Some(fc) => f(fc),
@@ -45,10 +45,9 @@ where F: FnOnce(&mut Fc) -> epics::Result<T> {
 }
 
 fn init(context: &mut Context) -> epics::Result<()> {
-    simple_logger::init().unwrap();
+    //simple_logger::init().unwrap();
     info!("init");
-    register_command!(context, fn connectDevice(addr: &str, prefix: &str) {
-        info!("connectDevice(addr={}, prefix={})", addr, prefix);
+    register_command!(context, fn connectDevice(addr: &str, prefix: &str) -> epics::Result<()> {
         match Fc::new(&"10.0.0.9", None, Duration::from_secs(10)) {
             Ok(fc) => match DEVICES.lock().unwrap().entry(String::from(prefix)) {
                 Entry::Occupied(_) => {
@@ -60,7 +59,7 @@ fn init(context: &mut Context) -> epics::Result<()> {
                     Ok(())
                 },
             },
-            Err(e) => Err(format!("cannot connect to {} ({}): {:?}", prefix, addr, e)),
+            Err(e) => Err(format!("cannot connect to {} ({}): {:?}", prefix, addr, e).into()),
         }
     });
     Ok(())
@@ -75,11 +74,11 @@ fn record_init(record: &mut AnyRecord) -> epics::Result<AnyHandlerBox> {
         AnyRecord::Stringin(_) => {
             match name {
                 "IDN" => Ok(Box::new(IdnHandler::new(pref)) as Box<dyn StringinHandler + Send>),
-                _ => { error!("no such device"); Err(())},
+                _ => Err(()),
             }
         }.map(|t| t.into()),
-        _ => { error!("unknown record"); Err(()) },
-    }.unwrap()
+        _ => Err(()),
+    }.map_err(|_| format!("no handler for {:?} record '{}'", record.rtype(), name).into())
 }
 
 bind_device_support!(

@@ -11,7 +11,7 @@ crate-type = ["staticlib", "cdylib"]
 log = "0.4"
 simple_logger = "1.2.0"
 lazy_static = "1.3.0"
-epics = { git = "https://github.com/binp-automation/epics-rs", rev = "ff9e6c5bbef205bf64c85f6faa2574a649184168" }
+epics = { git = "https://github.com/binp-automation/epics-rs", rev = "f55e7096a59d6d9951ec4ca3a772e34085d48b59" }
 #{ path = "../../epics-rs" }
 ksfc-lxi = { git = "https://github.com/binp-automation/ksfc-lxi", rev = "eabeedf33d10e2adc116dce69ceb14eb566f86ff" }
 #{ path = "../../ksfc-lxi" }
