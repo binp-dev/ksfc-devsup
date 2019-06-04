@@ -1,19 +1,21 @@
 use epics::record::*;
 
-use crate::{with_device};
+use crate::device::DeviceHandle;
+
 
 pub struct IdnHandler {
-    dev: String,
+    dev: DeviceHandle,
 }
 impl IdnHandler {
-    pub fn new(dev: &str) -> Self {
-        Self { dev: dev.into() }
+    pub fn new(dev: DeviceHandle) -> Self {
+        Self { dev }
     }
 }
 
 impl ScanHandler<StringinRecord> for IdnHandler {
-    fn set_scan(&mut self, _record: &mut StringinRecord, _scan: Scan) -> epics::Result<()> {
-        unimplemented!();
+    fn set_scan(&mut self, _record: &mut StringinRecord, scan: Scan) -> epics::Result<()> {
+        self.dev.idn_set_scan(scan);
+        Ok(())
     }
 }
 impl ReadHandler<StringinRecord> for IdnHandler {
@@ -21,10 +23,9 @@ impl ReadHandler<StringinRecord> for IdnHandler {
         Ok(false)
     }
     fn read_async(&mut self, record: &mut StringinRecord) -> epics::Result<()> {
-        with_device(&self.dev, |fc| {
-            fc.api().idn().map_err(|e| e.into())
-        }).and_then(|idn| {
-            record.set_val(&idn);
+        self.dev.idn_get()
+        .and_then(|idn| {
+            record.set_val(idn.as_bytes());
             Ok(())
         })
     }

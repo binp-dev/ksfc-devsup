@@ -1,11 +1,12 @@
+mod device;
 mod handler;
 
-use std::str::from_utf8;
 use std::sync::Mutex;
+use std::str::from_utf8;
 use std::collections::hash_map::{HashMap, Entry};
-use std::time::{Duration};
 
-use log::{info};
+
+use log::{info, error};
 //use simple_logger;
 use lazy_static::lazy_static;
 
@@ -18,13 +19,12 @@ use epics::{
     context::*,
 };
 
-use ksfc_lxi::{Fc};
-
+use device::Device;
 use handler::*;
 
 
 lazy_static! {
-    static ref DEVICES: Mutex<HashMap<String, Fc>> = Mutex::new(HashMap::new());
+    static ref DEVICES: Mutex<HashMap<String, Device>> = Mutex::new(HashMap::new());
 }
 
 fn split_name(name: &str) -> Result<(&str, &str), ()> {
@@ -36,30 +36,37 @@ fn split_name(name: &str) -> Result<(&str, &str), ()> {
     }
 }
 
-fn with_device<T, F>(dev: &str, f: F) -> epics::Result<T>
-where F: FnOnce(&mut Fc) -> epics::Result<T> {
-    match DEVICES.lock().unwrap().get_mut(dev) {
-        Some(fc) => f(fc),
-        None => Err(format!("no such device: {}", dev).into()),
-    }
-}
-
 fn init(context: &mut Context) -> epics::Result<()> {
     //simple_logger::init().unwrap();
     info!("init");
     register_command!(context, fn connectDevice(addr: &str, prefix: &str) -> epics::Result<()> {
-        match Fc::new(&"10.0.0.9", None, Duration::from_secs(10)) {
-            Ok(fc) => match DEVICES.lock().unwrap().entry(String::from(prefix)) {
-                Entry::Occupied(_) => {
-                    Err(format!("device '{}' already exists", prefix).into())
-                },
-                Entry::Vacant(v) => {
-                    v.insert(fc);
-                    info!("device '{}' ({}) connected", prefix, addr);
-                    Ok(())
-                },
+        match DEVICES.lock().unwrap().entry(String::from(prefix)) {
+            Entry::Occupied(_) => {
+                Err(format!("device '{}' already exists", prefix).into())
             },
-            Err(e) => Err(format!("cannot connect to {} ({}): {:?}", prefix, addr, e).into()),
+            Entry::Vacant(v) => {
+                let dev = Device::new(&"10.0.0.9", None);
+                v.insert(dev);
+                info!("device '{}' ({}) added", prefix, addr);
+                Ok(())
+            },
+        }
+    });
+    register_command!(context, fn startAll() -> epics::Result<()> {
+        let mut was_err = false;
+        for (name, dev) in DEVICES.lock().unwrap().iter_mut() {
+            match dev.start() {
+                Ok(()) => info!("device '{}' started", name),
+                Err(e) => {
+                    error!("device '{}' cannot start: {:?}", name, e);
+                    was_err = true;
+                }
+            }
+        }
+        if was_err {
+            Err("some devices failed to start".into())
+        } else {
+            Ok(())
         }
     });
     Ok(())
@@ -70,10 +77,14 @@ fn record_init(record: &mut AnyRecord) -> epics::Result<AnyHandlerBox> {
     let full_name = String::from(from_utf8(record.name()).unwrap());
     let (pref, name) = split_name(&full_name).unwrap();
     info!("... {}", full_name);
+    let handle = match DEVICES.lock().unwrap().get_mut(pref) {
+        Some(dev) => Ok(dev.handle()),
+        None => Err(format!("no such device: {}", pref)),
+    }?;
     match record {
         AnyRecord::Stringin(_) => {
             match name {
-                "IDN" => Ok(Box::new(IdnHandler::new(pref)) as Box<dyn StringinHandler + Send>),
+                "IDN" => Ok(Box::new(IdnHandler::new(handle)) as Box<dyn StringinHandler + Send>),
                 _ => Err(()),
             }
         }.map(|t| t.into()),

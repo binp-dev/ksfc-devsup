@@ -14,3 +14,4 @@ connectDevice("10.0.0.9", "FC")
 cd "${TOP}/iocBoot/${IOC}"
 iocInit()
 
+startAll()
