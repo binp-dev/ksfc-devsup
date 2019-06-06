@@ -1,6 +1,6 @@
 [package]
 name = "device_support"
-version = "0.1.0"
+version = "0.1.1"
 authors = ["Alexey Gerasev <alexey.gerasev@gmail.com>"]
 edition = "2018"
 
@@ -8,5 +8,12 @@ edition = "2018"
 crate-type = ["staticlib", "cdylib"]
 
 [dependencies]
-epics = { git = "https://github.com/binp-automation/epics-rs", rev = "f55e7096a59d6d9951ec4ca3a772e34085d48b59" }
+log = "0.4"
+simple_logger = "1.2.0"
+lazy_static = "1.3.0"
+timer = "0.2.0"
+enum-map = "0.5.0"
+epics = { git = "https://github.com/binp-automation/epics-rs", rev = "e4b901cefdb7f23df5b423ae41fa52521161bbdd" }
 #{ path = "../../epics-rs" }
+ksfc-lxi = { git = "https://github.com/binp-automation/ksfc-lxi", rev = "2e4e7487265c33190aec50f57bae6b61c8e2fc29" }
+#{ path = "../../ksfc-lxi" }

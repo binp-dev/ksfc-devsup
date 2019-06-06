@@ -1,55 +1,59 @@
-
-record(ai, "AI_IOINTR")
+record(stringin, "$(P):IDN")
 {
     field(DTYP, "rsbind")
     field(SCAN, "I/O Intr")
 }
-record(ai, "AI_SCAN_2S")
-{
-    field(DTYP, "rsbind")
-    field(SCAN, "2 second")
-}
-record(ao, "AO")
-{
-    field(DTYP, "rsbind")
-}
 
-record(bi, "BI_IOINTR")
-{
-    field(DTYP, "rsbind")
-    field(SCAN, "I/O Intr")
-}
-record(bo, "BO")
-{
-    field(DTYP, "rsbind")
-}
-
-record(longin, "LONGIN_IOINTR")
-{
-    field(DTYP, "rsbind")
-    field(SCAN, "I/O Intr")
-}
-record(longin, "LONGIN_SCAN_5S")
-{
-    field(DTYP, "rsbind")
-    field(SCAN, "5 second")
-}
-record(longout, "LONGOUT")
-{
-    field(DTYP, "rsbind")
-}
-
-record(stringin, "STRINGIN_PINI")
+record(ao, "$(P):GATE_TIME_1")
 {
     field(DTYP, "rsbind")
     field(PINI, "YES")
+    field(DRVL, 1e-4)
+    field(DRVH, 9)
+    field(VAL, 0.1)
 }
-record(stringin, "STRINGIN_IOINTR")
+record(ao, "$(P):GATE_TIME_2")
+{
+    field(DTYP, "rsbind")
+    field(PINI, "YES")
+    field(DRVL, 1e-4)
+    field(DRVH, 9)
+    field(VAL, 0.1)
+}
+
+record(ai, "$(P):FREQ_1")
 {
     field(DTYP, "rsbind")
     field(SCAN, "I/O Intr")
 }
-record(stringout, "STRINGOUT")
+record(ai, "$(P):FREQ_2")
 {
     field(DTYP, "rsbind")
+    field(SCAN, "I/O Intr")
+}
+
+record(longout, "$(P):CHAN_1")
+{
+    field(DTYP, "rsbind")
+    field(PINI, "YES")
+    field(DRVL, 0)
+    field(DRVH, 1)
+    field(VAL, 1)
+}
+record(longout, "$(P):CHAN_2")
+{
+    field(DTYP, "rsbind")
+    field(PINI, "YES")
+    field(DRVL, 0)
+    field(DRVH, 1)
+    field(VAL, 0)
+}
+
+record(longout, "$(P):MEASURE")
+{
+    field(DTYP, "rsbind")
+    field(PINI, "YES")
+    field(DRVL, 0)
+    field(DRVH, 1)
+    field(VAL, 0)
 }

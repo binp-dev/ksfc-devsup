@@ -1,131 +1,103 @@
-use std::{
-    ops::Deref,
-    str::from_utf8,
-};
+mod device;
+mod handlers;
+
+use std::sync::Mutex;
+use std::str::from_utf8;
+use std::collections::hash_map::{HashMap, Entry};
+
+
+use log::{info, error};
+//use simple_logger;
+use lazy_static::lazy_static;
+
 
 use epics::{
+    self,
     bind_device_support,
     register_command,
     record::*,
     context::*,
 };
 
-fn name<R: Deref<Target=Record>>(r: &R) -> &str {
-    from_utf8(r.name()).unwrap()
+use ksfc_lxi::{
+    types::{ChannelNo},
+};
+
+use device::Device;
+use handlers::*;
+
+
+lazy_static! {
+    static ref DEVICES: Mutex<HashMap<String, Device>> = Mutex::new(HashMap::new());
 }
 
-macro_rules! impl_scan_handler {
-    ($Handler:ident, $Record:ident) => {
-        impl ScanHandler<$Record> for $Handler {
-            fn set_scan(&mut self, record: &mut $Record, _scan: Scan) -> epics::Result<()> {
-                println!("[DEVSUP] {}.set_scan({})", stringify!($Record), name(record));
-                Ok(())
-            }
-        }
-    };
-}
-
-macro_rules! impl_read_handler {
-    ($Handler:ident, $Record:ident) => {
-        impl ReadHandler<$Record> for $Handler {
-            fn read(&mut self, record: &mut $Record) -> epics::Result<bool> {
-                println!("[DEVSUP] {}.read({})", stringify!($Record), name(record));
-                Ok(false)
-            }
-            fn read_async(&mut self, record: &mut $Record) -> epics::Result<()> {
-                println!("[DEVSUP] {}.read_async({})", stringify!($Record), name(record));
-                Ok(())
-            }
-        }
-    };
-}
-
-macro_rules! impl_write_handler {
-    ($Handler:ident, $Record:ident) => {
-        impl WriteHandler<$Record> for $Handler {
-            fn write(&mut self, record: &mut $Record) -> epics::Result<bool> {
-                println!("[DEVSUP] {}.write({})", stringify!($Record), name(record));
-                Ok(false)
-            }
-            fn write_async(&mut self, record: &mut $Record) -> epics::Result<()> {
-                println!("[DEVSUP] {}.write_async({})", stringify!($Record), name(record));
-                Ok(())
-            }
-        }
-    };
-}
-
-struct AiTest {}
-impl_scan_handler!(AiTest, AiRecord);
-impl_read_handler!(AiTest, AiRecord);
-impl AiHandler for AiTest {
-    fn linconv(&mut self, record: &mut AiRecord, _after: i32) -> epics::Result<()> {
-        println!("[DEVSUP] AiRecord.linconv({})", name(record));
-        Ok(())
+fn split_name(name: &str) -> Result<(&str, &str), ()> {
+    let mut it = name.rsplitn(2, ':');
+    let rec = it.next().unwrap();
+    match it.next() {
+        Some(pref) => Ok((pref, rec)),
+        None => Err(()),
     }
 }
-
-struct AoTest {}
-impl_scan_handler!(AoTest, AoRecord);
-impl_write_handler!(AoTest, AoRecord);
-impl AoHandler for AoTest {
-    fn linconv(&mut self, record: &mut AoRecord, _after: i32) -> epics::Result<()> {
-        println!("[DEVSUP] AoRecord.linconv({})", name(record));
-        Ok(())
-    }
-}
-
-struct BiTest {}
-impl_scan_handler!(BiTest, BiRecord);
-impl_read_handler!(BiTest, BiRecord);
-impl BiHandler for BiTest {}
-
-struct BoTest {}
-impl_scan_handler!(BoTest, BoRecord);
-impl_write_handler!(BoTest, BoRecord);
-impl BoHandler for BoTest {}
-
-struct LonginTest {}
-impl_scan_handler!(LonginTest, LonginRecord);
-impl_read_handler!(LonginTest, LonginRecord);
-impl LonginHandler for LonginTest {}
-
-struct LongoutTest {}
-impl_scan_handler!(LongoutTest, LongoutRecord);
-impl_write_handler!(LongoutTest, LongoutRecord);
-impl LongoutHandler for LongoutTest {}
-
-struct StringinTest {}
-impl_scan_handler!(StringinTest, StringinRecord);
-impl_read_handler!(StringinTest, StringinRecord);
-impl StringinHandler for StringinTest {}
-
-struct StringoutTest {}
-impl_scan_handler!(StringoutTest, StringoutRecord);
-impl_write_handler!(StringoutTest, StringoutRecord);
-impl StringoutHandler for StringoutTest {}
-
 
 fn init(context: &mut Context) -> epics::Result<()> {
-    println!("[DEVSUP] init");
-    register_command!(context, fn test_command(a: i32, b: f64, c: &str) -> epics::Result<()> {
-        println!("[DEVSUP] test_command({}, {}, {})", a, b, c);
-        Ok(())
+    //simple_logger::init().unwrap();
+    info!("init");
+    register_command!(context, fn connectDevice(addr: &str, prefix: &str) -> epics::Result<()> {
+        match DEVICES.lock().unwrap().entry(String::from(prefix)) {
+            Entry::Occupied(_) => {
+                Err(format!("device '{}' already exists", prefix).into())
+            },
+            Entry::Vacant(v) => {
+                let dev = Device::new(&"10.0.0.9", None);
+                v.insert(dev);
+                info!("device '{}' ({}) added", prefix, addr);
+                Ok(())
+            },
+        }
+    });
+    register_command!(context, fn startAll() -> epics::Result<()> {
+        let mut was_err = false;
+        for (name, dev) in DEVICES.lock().unwrap().iter_mut() {
+            match dev.start() {
+                Ok(()) => info!("device '{}' started", name),
+                Err(e) => {
+                    error!("device '{}' cannot start: {:?}", name, e);
+                    was_err = true;
+                }
+            }
+        }
+        if was_err {
+            Err("some devices failed to start".into())
+        } else {
+            Ok(())
+        }
     });
     Ok(())
 }
+
 fn record_init(record: &mut AnyRecord) -> epics::Result<AnyHandlerBox> {
-    println!("[DEVSUP] record_init {:?}: {}", record.rtype(), name(record));
-    Ok(match record {
-        AnyRecord::Ai(_) => ((Box::new(AiTest {}) as Box<dyn AiHandler + Send>)).into(),
-        AnyRecord::Ao(_) => ((Box::new(AoTest {}) as Box<dyn AoHandler + Send>)).into(),
-        AnyRecord::Bi(_) => ((Box::new(BiTest {}) as Box<dyn BiHandler + Send>)).into(),
-        AnyRecord::Bo(_) => ((Box::new(BoTest {}) as Box<dyn BoHandler + Send>)).into(),
-        AnyRecord::Longin(_) => ((Box::new(LonginTest {}) as Box<dyn LonginHandler + Send>)).into(),
-        AnyRecord::Longout(_) => ((Box::new(LongoutTest {}) as Box<dyn LongoutHandler + Send>)).into(),
-        AnyRecord::Stringin(_) => ((Box::new(StringinTest {}) as Box<dyn StringinHandler + Send>)).into(),
-        AnyRecord::Stringout(_) => ((Box::new(StringoutTest {}) as Box<dyn StringoutHandler + Send>)).into(),
-    })
+    let full_name = String::from(from_utf8(record.name()).unwrap());
+    let (pref, name) = split_name(&full_name).unwrap();
+    info!("record_init({})", full_name);
+    let handle = match DEVICES.lock().unwrap().get_mut(pref) {
+        Some(dev) => Ok(dev.handle()),
+        None => Err(format!("no such device: {}", pref)),
+    }?;
+    match name {
+        "IDN" => Ok(IdnHandler::new(handle).into_any_box()),
+
+        "CHAN_1" =>      Ok( ChanActHandler::new(handle, ChannelNo::Ch1).into_any_box()),
+        "GATE_TIME_1" => Ok(GateTimeHandler::new(handle, ChannelNo::Ch1).into_any_box()),
+        "FREQ_1" =>      Ok(ChanFreqHandler::new(handle, ChannelNo::Ch1).into_any_box()),
+
+        "CHAN_2" =>      Ok( ChanActHandler::new(handle, ChannelNo::Ch2).into_any_box()),
+        "GATE_TIME_2" => Ok(GateTimeHandler::new(handle, ChannelNo::Ch2).into_any_box()),
+        "FREQ_2" =>      Ok(ChanFreqHandler::new(handle, ChannelNo::Ch2).into_any_box()),
+
+        "MEASURE" => Ok(MeasureHandler::new(handle).into_any_box()),
+        _ => Err(format!("no handler for {:?} record '{}'", record.rtype(), name).into()),
+    }
 }
 
 bind_device_support!(
