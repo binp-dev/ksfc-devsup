@@ -7,14 +7,21 @@ use std::sync::mpsc::{channel, Sender};
 
 use epics::{Scan};
 
-use ksfc_lxi::{KsFc};
+use ksfc_lxi::{
+    KsFc,
+    types::{ChannelNo},
+};
 
-use driver::{Driver, Cmd as DrvCmd, Data as DrvData};
+use driver::{
+    Driver,
+    Cmd as DrvCmd, ChanCmd,
+    Data as DrvData,
+};
 
 #[derive(Clone)]
 pub struct DeviceHandle {
     data: Arc<Mutex<DrvData>>,
-    chan: Sender<DrvCmd>,
+    tx:   Sender<DrvCmd>,
 }
 
 pub struct Device {
@@ -31,7 +38,7 @@ impl Device {
 
         let data = Arc::new(Mutex::new(DrvData::new()));
 
-        let handle = DeviceHandle { data: data.clone(), chan: tx };
+        let handle = DeviceHandle { data: data.clone(), tx };
 
         let driver = Driver::new(dev, data, rx);
 
@@ -55,18 +62,30 @@ impl Device {
 
 impl Drop for Device {
     fn drop(&mut self) {
-        self.handle.chan.send(DrvCmd::Stop).unwrap();
+        self.handle.tx.send(DrvCmd::Stop).unwrap();
     }
 }
 
 impl DeviceHandle {
     pub fn idn_set_scan(&self, scan: Scan) {
-        self.chan.send(DrvCmd::IdnSetScan(scan)).unwrap();
+        self.tx.send(DrvCmd::IdnSetScan(scan)).unwrap();
     }
     pub fn idn_get(&self) -> epics::Result<String> {
-        match self.data.lock().unwrap().idn {
-            Some(ref idn) => Ok(idn.clone()),
-            None => Err("device is not available".into()),
-        }
+        Ok(self.data.lock().unwrap().idn.clone())
+    }
+    pub fn chan_activate(&self, chan: ChannelNo, act: bool) {
+        self.tx.send(DrvCmd::Chan(chan, ChanCmd::Activate(act))).unwrap();
+    }
+    pub fn chan_freq_set_scan(&self, chan: ChannelNo, scan: Scan) {
+        self.tx.send(DrvCmd::Chan(chan, ChanCmd::SetScan(scan))).unwrap();
+    }
+    pub fn chan_freq_get(&self, chan: ChannelNo) -> epics::Result<f64> {
+        Ok(self.data.lock().unwrap().channels[chan].freq)
+    }
+    pub fn chan_gate_time_set(&self, chan: ChannelNo, gate_time: Duration) {
+        self.tx.send(DrvCmd::Chan(chan, ChanCmd::SetGateTime(gate_time))).unwrap();
+    }
+    pub fn measure(&self, meas: bool) {
+        self.tx.send(DrvCmd::Measure(meas)).unwrap();
     }
 }

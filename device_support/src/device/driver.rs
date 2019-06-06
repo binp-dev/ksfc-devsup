@@ -4,16 +4,23 @@ use std::sync::mpsc::{Receiver, TryRecvError, RecvTimeoutError};
 
 use log::{info, error};
 
+use enum_map::{EnumMap};
+
 use epics::{Scan};
 
-use ksfc_lxi::{KsFc, types::{ChannelNo}};
+use ksfc_lxi::{
+    self as ksfc,
+    KsFc,
+    types::{ChannelNo, TriggerSource},
+};
 
 
-static RECV_TIMEOUT: Duration = Duration::from_secs(1);
-static RECONNECT_PERIOD: Duration = Duration::from_secs(10);
+const RECV_TIMEOUT: Duration = Duration::from_secs(1);
+const RECONNECT_PERIOD: Duration = Duration::from_secs(10);
 
 pub enum ChanCmd {
     SetScan(Scan),
+    SetGateTime(Duration),
     Activate(bool),
 }
 
@@ -27,25 +34,31 @@ pub enum Cmd {
 #[derive(Default)]
 struct ChanPar {
     freq: Option<Scan>,
+    gate_time: Duration,
     active: bool,
 }
 
 #[derive(Default)]
 struct Par {
     idn: Option<Scan>,
-    chans: [ChanPar; 2],
+    channels: EnumMap<ChannelNo, ChanPar>,
     measure: bool,
 }
 
+#[derive(Default)]
+pub struct ChanData {
+    pub freq: f64,
+}
+
+#[derive(Default)]
 pub struct Data {
-    pub idn: Option<String>,
+    pub idn: String,
+    pub channels: EnumMap<ChannelNo, ChanData>,
 }
 
 impl Data {
     pub fn new() -> Self {
-        Self {
-            idn: None,
-        }
+        Self::default()
     }
 }
 
@@ -68,10 +81,10 @@ impl Driver {
         }
     }
 
-    fn get_idn(&mut self) -> epics::Result<()> {
-        self.dev.idn().map_err(|e| format!("{}", e).into())
+    fn get_idn(&mut self) -> ksfc::Result<()> {
+        self.dev.idn()
         .and_then(|idn| {
-            self.data.lock().unwrap().idn = Some(idn);
+            self.data.lock().unwrap().idn = idn;
             match self.par.idn {
                 Some(ref s) => s.request().map_err(|()| "scan request error".into()),
                 None => Err("no scan for IDN".into()),
@@ -79,13 +92,19 @@ impl Driver {
         })
     }
 
-    fn on_connect(&mut self) -> epics::Result<()> {
+    fn reset(&mut self) -> ksfc::Result<()> {
+        self.dev.rst()
+        .and_then(|()| self.dev.trigger_source_set(TriggerSource::Immediate))
+    }
+
+    fn on_connect(&mut self) -> ksfc::Result<()> {
         self.get_idn()
+        .and_then(|()| self.reset())
     }
 
     fn connect_if_need(&mut self) -> bool {
         if self.dev.is_connected() {
-            !self.par.measure
+            !(self.par.measure && self.par.channels.iter().any(|(_, ch)| ch.active))
         } else {
             let retry = match self.last_conn {
                 Some(inst) => inst.elapsed() >= RECONNECT_PERIOD,
@@ -119,13 +138,13 @@ impl Driver {
                 }
             },
             Cmd::Chan(cn, chan_cmd) => {
-                let ch = match cn {
-                    ChannelNo::Ch1 => &mut self.par.chans[0],
-                    ChannelNo::Ch2 => &mut self.par.chans[1],
-                };
+                let ch = &mut self.par.channels[cn];
                 match chan_cmd {
                     ChanCmd::SetScan(scan) => if ch.freq.replace(scan).is_some() {
                         error!("Reset scan for FREQ_{}", cn as u8);
+                    },
+                    ChanCmd::SetGateTime(gate_time) => {
+                        ch.gate_time = gate_time;
                     },
                     ChanCmd::Activate(act) => {
                         ch.active = act;
@@ -140,40 +159,95 @@ impl Driver {
         false
     }
 
+    fn receive_cmd(&mut self, wait: bool) -> Option<Cmd> {
+        if wait {
+            match self.rx.recv_timeout(RECV_TIMEOUT) {
+                Ok(cmd) => Some(cmd),
+                Err(e) => match e {
+                    RecvTimeoutError::Timeout => None,
+                    RecvTimeoutError::Disconnected => unreachable!(),
+                },
+            }
+        } else {
+            match self.rx.try_recv() {
+                Ok(cmd) => Some(cmd),
+                Err(e) => match e {
+                    TryRecvError::Empty => None,
+                    TryRecvError::Disconnected => unreachable!(),
+                },
+            }
+        }
+    }
+
     pub fn start(mut self) {
+        self.run_loop();
+    }
+
+    fn run_loop(&mut self) {
         'outer: loop {
             let mut wait = self.connect_if_need();
 
             'inner: loop {
-                let cmd = if wait {
-                    match self.rx.recv_timeout(RECV_TIMEOUT) {
-                        Ok(cmd) => cmd,
-                        Err(e) => match e {
-                            RecvTimeoutError::Timeout => break 'inner,
-                            RecvTimeoutError::Disconnected => unreachable!(),
-                        },
-                    }
-                } else {
-                    match self.rx.try_recv() {
-                        Ok(cmd) => cmd,
-                        Err(e) => match e {
-                            TryRecvError::Empty => break 'inner,
-                            TryRecvError::Disconnected => unreachable!(),
-                        },
-                    }
+                let cmd = match self.receive_cmd(wait) {
+                    Some(cmd) => {
+                        wait = false;
+                        cmd
+                    },
+                    None => break 'inner,
                 };
-                wait = false;
 
                 if self.handle_cmd(cmd) {
                     break 'outer;
                 }
             }
-
+            
             if self.dev.is_connected() {
-                if self.just_conn {
-                    self.on_connect().unwrap();
+                match {
+                    if self.just_conn {
+                        self.just_conn = false;
+                        self.on_connect()
+                    } else {
+                        Ok(())
+                    }
+                }.and_then(|()| {
+                    if self.par.measure {
+                        let mut res = Ok(());
+                        let par = &self.par;
+                        let dev = &mut self.dev;
+                        let data = &mut self.data;
+                        for (no, ch) in &par.channels {
+                            if ch.active {
+                                match dev.configure_frequency(no)
+                                .and_then(|()| dev.sense_frequency_gate_time_set(ch.gate_time))
+                                .and_then(|()| dev.initiate())
+                                .and_then(|()| dev.fetch())
+                                .and_then(|val| {
+                                    let mut guard = data.lock().unwrap();
+                                    guard.channels[no].freq = val;
+                                    match par.channels[no].freq {
+                                        Some(ref s) => s.request().map_err(|()| "scan request error".into()),
+                                        None => Err(format!("no scan for chan_{}", no as u8).into()),
+                                    }
+                                }) {
+                                    Ok(()) => (),
+                                    Err(e) => {
+                                        res = Err(e);
+                                        break;
+                                    }
+                                }
+                            }
+                        }
+                        res
+                    } else {
+                        Ok(())
+                    }
+                }) {
+                    Ok(()) => (),
+                    Err(err) => {
+                        self.dev.disconnect();
+                        error!("error occured while measurement, reconnecting: {}", err);
+                    },
                 }
-                self.just_conn = false;
             }
         }
     }

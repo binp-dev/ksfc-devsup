@@ -1,5 +1,5 @@
 mod device;
-mod handler;
+mod handlers;
 
 use std::sync::Mutex;
 use std::str::from_utf8;
@@ -19,8 +19,12 @@ use epics::{
     context::*,
 };
 
+use ksfc_lxi::{
+    types::{ChannelNo},
+};
+
 use device::Device;
-use handler::*;
+use handlers::*;
 
 
 lazy_static! {
@@ -73,23 +77,27 @@ fn init(context: &mut Context) -> epics::Result<()> {
 }
 
 fn record_init(record: &mut AnyRecord) -> epics::Result<AnyHandlerBox> {
-    info!("record_init ...");
     let full_name = String::from(from_utf8(record.name()).unwrap());
     let (pref, name) = split_name(&full_name).unwrap();
-    info!("... {}", full_name);
+    info!("record_init({})", full_name);
     let handle = match DEVICES.lock().unwrap().get_mut(pref) {
         Some(dev) => Ok(dev.handle()),
         None => Err(format!("no such device: {}", pref)),
     }?;
-    match record {
-        AnyRecord::Stringin(_) => {
-            match name {
-                "IDN" => Ok(Box::new(IdnHandler::new(handle)) as Box<dyn StringinHandler + Send>),
-                _ => Err(()),
-            }
-        }.map(|t| t.into()),
-        _ => Err(()),
-    }.map_err(|_| format!("no handler for {:?} record '{}'", record.rtype(), name).into())
+    match name {
+        "IDN" => Ok(IdnHandler::new(handle).into_any_box()),
+
+        "CHAN_1" =>      Ok( ChanActHandler::new(handle, ChannelNo::Ch1).into_any_box()),
+        "GATE_TIME_1" => Ok(GateTimeHandler::new(handle, ChannelNo::Ch1).into_any_box()),
+        "FREQ_1" =>      Ok(ChanFreqHandler::new(handle, ChannelNo::Ch1).into_any_box()),
+
+        "CHAN_2" =>      Ok( ChanActHandler::new(handle, ChannelNo::Ch2).into_any_box()),
+        "GATE_TIME_2" => Ok(GateTimeHandler::new(handle, ChannelNo::Ch2).into_any_box()),
+        "FREQ_2" =>      Ok(ChanFreqHandler::new(handle, ChannelNo::Ch2).into_any_box()),
+
+        "MEASURE" => Ok(MeasureHandler::new(handle).into_any_box()),
+        _ => Err(format!("no handler for {:?} record '{}'", record.rtype(), name).into()),
+    }
 }
 
 bind_device_support!(
