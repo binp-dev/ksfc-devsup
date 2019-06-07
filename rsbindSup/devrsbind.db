@@ -1,55 +1,48 @@
 
-record(ai, "AI_IOINTR")
+record(ai, "$(P):AI")
 {
     field(DTYP, "rsbind")
+    field(INP,  "@AiTest, $(D)")
     field(SCAN, "I/O Intr")
 }
-record(ai, "AI_SCAN_2S")
+record(ao, "$(P):AO")
 {
     field(DTYP, "rsbind")
-    field(SCAN, "2 second")
-}
-record(ao, "AO")
-{
-    field(DTYP, "rsbind")
+    field(OUT,  "@AoTest, $(D)")
 }
 
-record(bi, "BI_IOINTR")
+record(bi, "$(P):BI")
 {
     field(DTYP, "rsbind")
+    field(INP,  "@BiTest, $(D)")
     field(SCAN, "I/O Intr")
 }
-record(bo, "BO")
+record(bo, "$(P):BO")
 {
     field(DTYP, "rsbind")
+    field(OUT,  "@BoTest, $(D)")
 }
 
-record(longin, "LONGIN_IOINTR")
+record(longin, "$(P):LONGIN")
 {
     field(DTYP, "rsbind")
+    field(INP,  "@LonginTest, $(D)")
     field(SCAN, "I/O Intr")
 }
-record(longin, "LONGIN_SCAN_5S")
+record(longout, "$(P):LONGOUT")
 {
     field(DTYP, "rsbind")
-    field(SCAN, "5 second")
-}
-record(longout, "LONGOUT")
-{
-    field(DTYP, "rsbind")
+    field(OUT,  "@LongoutTest, $(D)")
 }
 
-record(stringin, "STRINGIN_PINI")
+record(stringin, "$(P):STRINGIN")
 {
     field(DTYP, "rsbind")
-    field(PINI, "YES")
-}
-record(stringin, "STRINGIN_IOINTR")
-{
-    field(DTYP, "rsbind")
+    field(INP,  "@StringinTest, $(D)")
     field(SCAN, "I/O Intr")
 }
-record(stringout, "STRINGOUT")
+record(stringout, "$(P):STRINGOUT")
 {
     field(DTYP, "rsbind")
+    field(OUT,  "@StringoutTest, $(D)")
 }

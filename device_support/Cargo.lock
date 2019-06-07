@@ -164,7 +164,8 @@ dependencies = [
 name = "device_support"
 version = "0.1.0"
 dependencies = [
- "epics 0.2.5 (git+https://github.com/binp-automation/epics-rs?rev=e4b901cefdb7f23df5b423ae41fa52521161bbdd)",
+ "epics 0.3.0 (git+https://github.com/binp-automation/epics-rs?rev=6eecce37e81394c0f19e32f2cd9c61c35979f543)",
+ "simple_logger 1.2.0 (registry+https://github.com/rust-lang/crates.io-index)",
 ]
 
 [[package]]
@@ -181,20 +182,19 @@ dependencies = [
 
 [[package]]
 name = "epics"
-version = "0.2.5"
-source = "git+https://github.com/binp-automation/epics-rs?rev=e4b901cefdb7f23df5b423ae41fa52521161bbdd#e4b901cefdb7f23df5b423ae41fa52521161bbdd"
+version = "0.3.0"
+source = "git+https://github.com/binp-automation/epics-rs?rev=6eecce37e81394c0f19e32f2cd9c61c35979f543#6eecce37e81394c0f19e32f2cd9c61c35979f543"
 dependencies = [
- "epics-sys 0.1.0 (git+https://github.com/binp-automation/epics-sys?rev=81ff86e4544c75303fe9f5eef57f6a9ded2d30e4)",
+ "epics-sys 0.1.1 (git+https://github.com/binp-automation/epics-sys?rev=a297e9c96d6c7f6bea22646200aaa082c24ed71f)",
  "lazy_static 1.3.0 (registry+https://github.com/rust-lang/crates.io-index)",
  "libc 0.2.58 (registry+https://github.com/rust-lang/crates.io-index)",
  "log 0.4.6 (registry+https://github.com/rust-lang/crates.io-index)",
- "simple_logger 1.2.0 (registry+https://github.com/rust-lang/crates.io-index)",
 ]
 
 [[package]]
 name = "epics-sys"
-version = "0.1.0"
-source = "git+https://github.com/binp-automation/epics-sys?rev=81ff86e4544c75303fe9f5eef57f6a9ded2d30e4#81ff86e4544c75303fe9f5eef57f6a9ded2d30e4"
+version = "0.1.1"
+source = "git+https://github.com/binp-automation/epics-sys?rev=a297e9c96d6c7f6bea22646200aaa082c24ed71f#a297e9c96d6c7f6bea22646200aaa082c24ed71f"
 dependencies = [
  "bindgen 0.49.2 (registry+https://github.com/rust-lang/crates.io-index)",
 ]
@@ -577,8 +577,8 @@ dependencies = [
 "checksum clap 2.33.0 (registry+https://github.com/rust-lang/crates.io-index)" = "5067f5bb2d80ef5d68b4c87db81601f0b75bca627bc2ef76b141d7b846a3c6d9"
 "checksum colored 1.8.0 (registry+https://github.com/rust-lang/crates.io-index)" = "6cdb90b60f2927f8d76139c72dbde7e10c3a2bc47c8594c9c7a66529f2687c03"
 "checksum env_logger 0.6.1 (registry+https://github.com/rust-lang/crates.io-index)" = "b61fa891024a945da30a9581546e8cfaf5602c7b3f4c137a2805cf388f92075a"
-"checksum epics 0.2.5 (git+https://github.com/binp-automation/epics-rs?rev=e4b901cefdb7f23df5b423ae41fa52521161bbdd)" = "<none>"
-"checksum epics-sys 0.1.0 (git+https://github.com/binp-automation/epics-sys?rev=81ff86e4544c75303fe9f5eef57f6a9ded2d30e4)" = "<none>"
+"checksum epics 0.3.0 (git+https://github.com/binp-automation/epics-rs?rev=6eecce37e81394c0f19e32f2cd9c61c35979f543)" = "<none>"
+"checksum epics-sys 0.1.1 (git+https://github.com/binp-automation/epics-sys?rev=a297e9c96d6c7f6bea22646200aaa082c24ed71f)" = "<none>"
 "checksum failure 0.1.5 (registry+https://github.com/rust-lang/crates.io-index)" = "795bd83d3abeb9220f257e597aa0080a508b27533824adf336529648f6abf7e2"
 "checksum fuchsia-cprng 0.1.1 (registry+https://github.com/rust-lang/crates.io-index)" = "a06f77d526c1a601b7c4cdd98f54b5eaabffc14d5f2f0296febdc7f357c6d3ba"
 "checksum fxhash 0.2.1 (registry+https://github.com/rust-lang/crates.io-index)" = "c31b6d751ae2c7f11320402d34e41349dd1016f8d5d45e48c4312bc8625af50c"

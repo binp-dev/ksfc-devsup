@@ -7,7 +7,7 @@ cd "${TOP}"
 dbLoadDatabase("dbd/rsbind.dbd")
 rsbind_registerRecordDeviceDriver(pdbbase)
 
-dbLoadRecords("db/devrsbind.db")
+dbLoadRecords("db/devrsbind.db", "P=TEST,D=test")
 
 cd "${TOP}/iocBoot/${IOC}"
 iocInit()

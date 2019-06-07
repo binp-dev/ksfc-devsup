@@ -13,15 +13,13 @@ def test_binding():
 
 def test_ioc():
     with CaRepeater(), Ioc("iocBoot/iocrsbind/st.cmd"):
-        assert caget("AO") == "0"
+        assert caget("TEST:AO") == "0"
         
-        caput("AO", "42")
-        assert caget("AO") == "42"
+        caput("TEST:AO", "42")
+        assert caget("TEST:AO") == "42"
         
-        caput("AO", "-17")
-        assert caget("AO") == "-17"
-
-        time.sleep(10)
+        caput("TEST:AO", "-17")
+        assert caget("TEST:AO") == "-17"
 
 if __name__ == "__main__":
     setup()
