@@ -16,7 +16,6 @@ def test_ioc():
         time.sleep(2.0)
         assert caget("FC:IDN").startswith("Agilent Technologies,53220A,")
         #assert caget("FC:FREQ_1") == "0"
-
 if __name__ == "__main__":
     setup()
     #test_binding()

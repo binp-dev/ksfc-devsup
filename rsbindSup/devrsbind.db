@@ -1,57 +1,65 @@
 record(stringin, "$(P):IDN")
 {
     field(DTYP, "rsbind")
+    field(INP,  "@Idn, $(D)")
     field(SCAN, "I/O Intr")
 }
 
-record(ao, "$(P):GATE_TIME_1")
+record(ao, "$(P):GATE_TIME:1")
 {
     field(DTYP, "rsbind")
+    field(OUT,  "@ChanGateTime, $(D), 1")
     field(PINI, "YES")
     field(DRVL, 1e-4)
     field(DRVH, 9)
     field(VAL, 0.1)
 }
-record(ao, "$(P):GATE_TIME_2")
+record(ao, "$(P):GATE_TIME:2")
 {
     field(DTYP, "rsbind")
+    field(OUT,  "@ChanGateTime, $(D), 2")
     field(PINI, "YES")
     field(DRVL, 1e-4)
     field(DRVH, 9)
     field(VAL, 0.1)
 }
 
-record(ai, "$(P):FREQ_1")
+record(ai, "$(P):FREQ:1")
 {
     field(DTYP, "rsbind")
+    field(INP,  "@ChanFreq, $(D), 1")
     field(SCAN, "I/O Intr")
 }
-record(ai, "$(P):FREQ_2")
+record(ai, "$(P):FREQ:2")
 {
     field(DTYP, "rsbind")
+    field(INP,  "@ChanFreq, $(D), 2")
     field(SCAN, "I/O Intr")
 }
 
-record(longout, "$(P):CHAN_1")
+record(longout, "$(P):CHAN:1")
 {
     field(DTYP, "rsbind")
+    field(OUT,  "@ChanAct, $(D), 1")
     field(PINI, "YES")
     field(DRVL, 0)
     field(DRVH, 1)
-    field(VAL, 1)
+    field(VAL,  1)
 }
-record(longout, "$(P):CHAN_2")
+record(longout, "$(P):CHAN:2")
 {
     field(DTYP, "rsbind")
+    field(OUT,  "@ChanAct, $(D), 2")
     field(PINI, "YES")
     field(DRVL, 0)
     field(DRVH, 1)
-    field(VAL, 0)
+    field(VAL,  0)
 }
 
 record(longout, "$(P):MEASURE")
 {
     field(DTYP, "rsbind")
+    field(OUT,  "@Measure, $(D)")
     field(PINI, "YES")
     field(DRVL, 0)
     field(DRVH, 1)
